@@ -26,9 +26,6 @@
         /** @var Keycloak */
         protected $keycloak;
 
-        /** @var string */
-        protected $state;
-
         /**
          * Re-authentication loads Keycloak, so keep this number as high as possible.
          * This means the re-authentication process with Refresh Token will be skipped for 30 seconds after last
@@ -109,7 +106,7 @@
                 $this->authorized($this->getUserProfile($response));
                 $this->notifyReAuth();
             } catch (\Exception $e) {
-                header("Location: " . $this->keycloak->getLoginUrl());
+                header("Location: " . $this->getLoginUrl());
                 exit();
             }
 
@@ -148,7 +145,7 @@
         {
             $this->keycloak->redirectUri = $this->getRedirectUri();
 
-            return $this->keycloak->getLoginUrl() . "&state=" . $this->state;
+            return $this->keycloak->getLoginUrl();
         }
 
         /**
@@ -210,16 +207,4 @@
          * @return RefreshToken
          */
         abstract protected function getRefreshToken(): RefreshToken;
-
-        /**
-         * Sets the state
-         *
-         * The state is a string that returns with a code from Keycloak, when an user has successfully logged in.
-         *
-         * @param string $state
-         */
-        public function setState(string $state): void
-        {
-            $this->state = $state;
-        }
     }
