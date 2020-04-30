@@ -106,7 +106,7 @@
                 $this->authorized($this->getUserProfile($response));
                 $this->notifyReAuth();
             } catch (\Exception $e) {
-                header("Location: " . $this->getLoginUrl());
+                header("Location: " . $this->keycloak->getLoginUrl());
                 exit();
             }
 
