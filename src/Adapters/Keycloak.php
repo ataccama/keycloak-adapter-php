@@ -23,15 +23,23 @@
      * @property-read AccessToken  $accessToken
      * @property-read RefreshToken $refreshToken;
      * @property-read string       $loginUrl
+     * @property-read string|null  $clientSecret
      */
     class Keycloak
     {
         use SmartObject;
 
+        /** @var string */
         protected $host, $realmId, $clientId;
+
+        /** @var string|null */
+        protected $clientSecret;
+
         public $redirectUri;
+
         /** @var AccessToken */
         protected $accessToken;
+
         /** @var RefreshToken */
         protected $refreshToken;
 
@@ -51,6 +59,10 @@
                 } else {
                     $this->$requiredParameter = $parameters[$requiredParameter];
                 }
+            }
+
+            if (isset($parameters["clientSecret"])) {
+                $this->clientSecret = $parameters["clientSecret"];
             }
         }
 
@@ -147,5 +159,13 @@
             $_SESSION['auth']['access_token']['expiration'] = $this->accessToken->expiration;
 
             return $this->accessToken;
+        }
+
+        /**
+         * @return string|null
+         */
+        public function getClientSecret(): ?string
+        {
+            return $this->clientSecret;
         }
     }

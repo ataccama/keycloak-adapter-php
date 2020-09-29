@@ -11,8 +11,10 @@
 
     use Ataccama\Adapters\Keycloak;
     use Ataccama\Adapters\KeycloakExtended;
+    use Ataccama\Adapters\Utils\UserProfile;
     use Ataccama\Clients\Keycloak\Env\Users\User;
     use Ataccama\Exceptions\CurlException;
+    use Ataccama\Exceptions\NotDefined;
     use Ataccama\Exceptions\UnknownError;
 
 
@@ -240,6 +242,51 @@
 
             if ($response->code == 204) {
                 return true;
+            }
+
+            if (isset($response->body->error)) {
+                throw new CurlException("HTTP $response->code: " . $response->body->error . ": " .
+                    $response->body->error_description);
+            } else {
+                throw new CurlException("HTTP $response->code: " . $response->error);
+            }
+        }
+
+        /**
+         * @param Keycloak $keycloak
+         * @param string   $username
+         * @param string   $password
+         * @return mixed
+         * @throws CurlException
+         * @throws NotDefined
+         */
+        public static function logIn(
+            Keycloak $keycloak,
+            string $username,
+            string $password
+        ): UserProfile {
+            if (empty($keycloak->clientSecret)) {
+                throw new NotDefined("Optional parameter 'clientSecret' is not defined. You have to define it for logging via API.");
+            }
+
+            $response = Curl::post("$keycloak->host/auth/realms/$keycloak->realmId/protocol/openid-connect/token", [
+                "Content-Type" => "application/x-www-form-urlencoded",
+            ], [
+                "grant_type"    => "password",
+                "client_id"     => $keycloak->clientId,
+                "client_secret" => $keycloak->clientSecret,
+                "username"      => $username,
+                "password"      => $password,
+                "scope"         => "openid"
+            ]);
+
+            if ($response->code == 200) {
+                $response = new AuthorizationResponse($response->body);
+                $userIdentity = $response->accessToken->getUserIdentity();
+
+                return new UserProfile($userIdentity->getId(), $userIdentity->getName(), $userIdentity->getEmail(),
+                    $response->refreshToken->refreshToken, $response->refreshToken->expiration,
+                    $userIdentity->getRoles($keycloak->clientId), $userIdentity->username);
             }
 
             if (isset($response->body->error)) {
