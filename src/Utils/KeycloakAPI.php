@@ -44,7 +44,7 @@
                 $request["client_secret"] = $keycloak->clientSecret;
             }
 
-            $response = Curl::post("$keycloak->host/auth/realms/$keycloak->realmId/protocol/openid-connect/token", [
+            $response = Curl::post("$keycloak->host/realms/$keycloak->realmId/protocol/openid-connect/token", [
                 "Content-Type" => "application/x-www-form-urlencoded"
             ], $request);
 
@@ -67,7 +67,7 @@
          */
         public static function getApiAuthorization(KeycloakExtended $keycloak): AuthorizationResponse
         {
-            $response = Curl::post("$keycloak->host/auth/realms/$keycloak->realmId/protocol/openid-connect/token", [
+            $response = Curl::post("$keycloak->host/realms/$keycloak->realmId/protocol/openid-connect/token", [
                 "Content-Type" => "application/x-www-form-urlencoded"
             ], [
                 'grant_type'    => 'password',
@@ -122,7 +122,7 @@
                 $request["emailVerified"] = true;
             }
 
-            $response = Curl::post("$keycloak->host/auth/admin/realms/$keycloak->realmId/users", [
+            $response = Curl::post("$keycloak->host/admin/realms/$keycloak->realmId/users", [
                 "Content-Type"  => "application/json",
                 "Authorization" => "Bearer " . $keycloak->apiAccessToken->bearer
             ], json_encode($request));
@@ -144,7 +144,7 @@
             KeycloakExtended $keycloak,
             string $email
         ): User {
-            $response = Curl::get("$keycloak->host/auth/admin/realms/$keycloak->realmId/users?email=" .
+            $response = Curl::get("$keycloak->host/admin/realms/$keycloak->realmId/users?email=" .
                 urlencode($email), [
                 "Content-Type"  => "application/json",
                 "Authorization" => "Bearer " . $keycloak->apiAccessToken->bearer
@@ -172,7 +172,7 @@
          */
         public static function reauthorize(Keycloak $keycloak, RefreshToken $userRefreshToken): AuthorizationResponse
         {
-            $response = Curl::post("$keycloak->host/auth/realms/$keycloak->realmId/protocol/openid-connect/token", [
+            $response = Curl::post("$keycloak->host/realms/$keycloak->realmId/protocol/openid-connect/token", [
                 "Content-Type" => "application/x-www-form-urlencoded"
             ], [
                 'grant_type'    => 'refresh_token',
@@ -210,7 +210,7 @@
                 $data["client_secret"] = $keycloak->clientSecret;
             }
 
-            $response = Curl::post("$keycloak->host/auth/realms/$keycloak->realmId/protocol/openid-connect/logout", [
+            $response = Curl::post("$keycloak->host/realms/$keycloak->realmId/protocol/openid-connect/logout", [
                 "Content-Type" => "application/x-www-form-urlencoded"
             ], $data);
 
@@ -228,7 +228,7 @@
 
         public static function userExists(KeycloakExtended $keycloak, string $email): bool
         {
-            $response = Curl::get("$keycloak->host/auth/admin/realms/$keycloak->realmId/users?email=" .
+            $response = Curl::get("$keycloak->host/admin/realms/$keycloak->realmId/users?email=" .
                 urlencode($email), [
                 "Authorization" => "Bearer " . $keycloak->apiAccessToken->bearer
             ]);
@@ -247,7 +247,7 @@
 
         public static function getUsernameByEmail(KeycloakExtended $keycloak, string $email): ?string
         {
-            $response = Curl::get("$keycloak->host/auth/admin/realms/$keycloak->realmId/users?email=" .
+            $response = Curl::get("$keycloak->host/admin/realms/$keycloak->realmId/users?email=" .
                 urlencode($email), [
                 "Authorization" => "Bearer " . $keycloak->apiAccessToken->bearer
             ]);
@@ -270,7 +270,7 @@
             string $password,
             bool $temporary = false
         ) {
-            $response = Curl::put("$keycloak->host/auth/admin/realms/$keycloak->realmId/users/$keycloakId/reset-password",
+            $response = Curl::put("$keycloak->host/admin/realms/$keycloak->realmId/users/$keycloakId/reset-password",
                 [
                     "Content-Type"  => "application/json",
                     "Authorization" => "Bearer " . $keycloak->apiAccessToken->bearer,
@@ -309,7 +309,7 @@
                 throw new NotDefined("Optional parameter 'clientSecret' is not defined. You have to define it for logging via API.");
             }
 
-            $response = Curl::post("$keycloak->host/auth/realms/$keycloak->realmId/protocol/openid-connect/token", [
+            $response = Curl::post("$keycloak->host/realms/$keycloak->realmId/protocol/openid-connect/token", [
                 "Content-Type" => "application/x-www-form-urlencoded",
             ], [
                 "grant_type"    => "password",
