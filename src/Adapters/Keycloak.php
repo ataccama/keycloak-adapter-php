@@ -76,7 +76,7 @@
                 throw new NotDefined("Parameter 'redirectUri' is not defined.");
             }
 
-            return "$this->host/auth/realms/$this->realmId/protocol/openid-connect/auth?client_id=$this->clientId&response_type=code&redirect_uri=" .
+            return "$this->host/realms/$this->realmId/protocol/openid-connect/auth?client_id=$this->clientId&response_type=code&redirect_uri=" .
                 urlencode($this->redirectUri);
         }
 
@@ -90,7 +90,7 @@
                 throw new NotDefined("Parameter 'redirectUri' is not defined.");
             }
 
-            return "$this->host/auth/realms/$this->realmId/protocol/openid-connect/registrations?client_id=$this->clientId&response_type=code&scope=openid%20email&redirect_uri=" .
+            return "$this->host/realms/$this->realmId/protocol/openid-connect/registrations?client_id=$this->clientId&response_type=code&scope=openid%20email&redirect_uri=" .
                 urlencode($this->redirectUri) . "&kc_locale=en";
         }
 

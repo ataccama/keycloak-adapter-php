@@ -15,40 +15,46 @@
     /**
      * Class UserProfile
      * @package Ataccama\Adapters\Utils
-     * @property-read string   $id
-     * @property-read string   $name
-     * @property-read string   $email
-     * @property-read string   $refreshToken
-     * @property-read int      $refreshTokenExpiration
-     * @property-read string[] $roles
-     * @property-read string   $username
+     * @property-read string      $id
+     * @property-read string      $name
+     * @property-read string|null $email
+     * @property-read string      $refreshToken
+     * @property-read int         $refreshTokenExpiration
+     * @property-read string[]    $roles
+     * @property-read string      $username
      */
     class UserProfile
     {
         use SmartObject;
 
         /** @var string */
-        protected $id, $name, $email, $refreshToken, $username;
+        protected string $username;
+        protected string $name;
+        protected string $id;
+        protected string $refreshToken;
+        protected ?string $email;
 
         /** @var string[] */
         protected $roles;
 
         /** @var int */
-        protected $refreshTokenExpiration;
+        protected int $refreshTokenExpiration;
 
         /**
          * UserProfile constructor.
-         * @param string   $id
-         * @param string   $name
-         * @param string   $email
-         * @param string   $refreshToken
-         * @param int      $refreshTokenExpiration
-         * @param string[] $roles
+         *
+         * @param string      $id
+         * @param string      $name
+         * @param string|null $email
+         * @param string      $refreshToken
+         * @param int         $refreshTokenExpiration
+         * @param string[]    $roles
+         * @param string      $username
          */
         public function __construct(
             string $id,
             string $name,
-            string $email,
+            ?string $email,
             string $refreshToken,
             int $refreshTokenExpiration,
             array $roles,
@@ -88,9 +94,9 @@
         }
 
         /**
-         * @return string
+         * @return string|null
          */
-        public function getEmail(): string
+        public function getEmail(): ?string
         {
             return $this->email;
         }
